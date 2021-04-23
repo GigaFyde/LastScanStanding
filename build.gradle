@@ -1,0 +1,44 @@
+import java.time.Clock
+
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.google.cloud.tools.jib' version '2.7.1'
+}
+
+group 'dev.gigafyde'
+version '1.0.0'
+mainClassName = 'dev.gigafyde.lastscanstanding.Main'
+sourceCompatibility = 11
+
+repositories {
+    mavenCentral()
+    maven {
+        name 'm2-dv8tion'
+        url 'https://m2.dv8tion.net/releases'
+    }
+}
+
+dependencies {
+    implementation group: 'io.sentry', name: 'sentry-logback', version: '4.0.0'
+    implementation group: 'com.google.guava', name: 'guava', version: '27.0-jre'
+    compile("net.dv8tion:JDA:4.2.1_253")
+}
+
+jib {
+    container {
+        mainClassName='dev.gigafyde.lastscanstanding.Main'
+        creationTime = Clock.systemUTC().instant()
+    }
+}
+
+compileJava {
+    classpath = sourceSets.main.compileClasspath
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << '-Xlint:unchecked'
+    options.deprecation = true
+}
